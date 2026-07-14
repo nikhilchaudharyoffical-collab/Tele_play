@@ -4,17 +4,6 @@ import 'video.js/dist/video-js.css';
 import Hls from 'hls.js';
 import './VideoPlayer.css';
 
-// Quality options matching backend ladder
-const QUALITY_LADDER = [
-  { label: 'Auto', value: 'auto' },
-  { label: '144p', value: '256x144', bitrate: 200000 },
-  { label: '240p', value: '426x240', bitrate: 400000 },
-  { label: '360p', value: '640x360', bitrate: 800000 },
-  { label: '480p', value: '854x480', bitrate: 1400000 },
-  { label: '720p', value: '1280x720', bitrate: 2800000 },
-  { label: '1080p', value: '1920x1080', bitrate: 5000000 },
-];
-
 const VideoPlayer = ({
   src,
   vastTagUrl,
@@ -23,13 +12,11 @@ const VideoPlayer = ({
   muted = false,
   onReady,
   onError,
-  onAdEvent,
 }) => {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const playerRef = useRef(null);
   const hlsRef = useRef(null);
-  const adContainerRef = useRef(null);
 
   // UI State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -61,7 +48,6 @@ const VideoPlayer = ({
 
     const video = videoRef.current;
 
-    // Initialize Video.js
     const player = videojs(video, {
       html5: {
         vhs: {
@@ -80,7 +66,6 @@ const VideoPlayer = ({
 
     playerRef.current = player;
 
-    // Initialize HLS.js for better control
     if (Hls.isSupported()) {
       const hls = new Hls({
         debug: false,
@@ -105,7 +90,6 @@ const VideoPlayer = ({
           label: `${level.height}p`,
         }));
         setAvailableQualities(levels);
-        console.log('Available qualities:', levels);
       });
 
       hls.on(Hls.Events.BUFFER_STALLED, () => setBuffering(true));
@@ -115,14 +99,11 @@ const VideoPlayer = ({
       video.src = src;
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // GOOGLE IMA SDK INTEGRATION (via global script in index.html)
-    // ═══════════════════════════════════════════════════════════════════
+    // IMA SDK
     if (vastTagUrl && window.google?.ima) {
       initIMA(player, vastTagUrl);
     }
 
-    // Player event listeners
     player.on('play', () => setIsPlaying(true));
     player.on('pause', () => setIsPlaying(false));
     player.on('timeupdate', () => setCurrentTime(player.currentTime()));
@@ -134,11 +115,9 @@ const VideoPlayer = ({
     player.on('waiting', () => setBuffering(true));
     player.on('playing', () => setBuffering(false));
     player.on('error', (e) => {
-      console.error('Player error:', e);
-      onError?.(e);
+      if (onError) onError(e);
     });
 
-    // Fullscreen change listener
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
     };
@@ -157,27 +136,22 @@ const VideoPlayer = ({
       clearTimeout(controlsTimeoutRef.current);
       clearInterval(adIntervalRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, vastTagUrl]);
 
   // ═══════════════════════════════════════════════════════════════════
-  // IMA SDK INITIALIZATION
+  // IMA SDK
   // ═══════════════════════════════════════════════════════════════════
   const initIMA = (player, tagUrl) => {
     const video = player.el().querySelector('video');
 
-    // Create ad display container
     const adContainer = document.createElement('div');
     adContainer.className = 'ad-container';
     adContainer.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:20;pointer-events:none;';
     containerRef.current.appendChild(adContainer);
-    adContainerRef.current = adContainer;
 
     try {
-      const adDisplayContainer = new window.google.ima.AdDisplayContainer(
-        adContainer,
-        video
-      );
-
+      const adDisplayContainer = new window.google.ima.AdDisplayContainer(adContainer, video);
       const adsLoader = new window.google.ima.AdsLoader(adDisplayContainer);
 
       adsLoader.addEventListener(
@@ -229,7 +203,6 @@ const VideoPlayer = ({
           });
 
           am.addEventListener(window.google.ima.AdErrorEvent.Type.AD_ERROR, (error) => {
-            console.warn('Ad error:', error.getError());
             setAdPlaying(false);
             player.play();
           });
@@ -252,12 +225,12 @@ const VideoPlayer = ({
 
       adsLoader.requestAds(adsRequest);
     } catch (e) {
-      console.error('IMA SDK initialization error:', e);
+      console.error('IMA SDK error:', e);
     }
   };
 
   // ═══════════════════════════════════════════════════════════════════
-  // CONTROL HANDLERS
+  // CONTROLS
   // ═══════════════════════════════════════════════════════════════════
   const togglePlay = useCallback(() => {
     if (adPlaying) return;
@@ -307,7 +280,7 @@ const VideoPlayer = ({
       hls.loadLevel = -1;
     } else {
       const level = availableQualities.findIndex(q =>
-        q.height === parseInt(quality.replace('p', ''))
+        q.height === parseInt(quality.replace('p', ''), 10)
       );
       if (level !== -1) {
         hls.currentLevel = level;
@@ -324,11 +297,9 @@ const VideoPlayer = ({
   }, []);
 
   const skipAd = useCallback(() => {
-    // IMA SDK skip functionality
     console.log('Skip ad clicked');
-  }, [adSkipable]);
+  }, []);
 
-  // Show/hide controls on mouse move
   const handleMouseMove = useCallback(() => {
     setShowControls(true);
     clearTimeout(controlsTimeoutRef.current);
@@ -337,7 +308,6 @@ const VideoPlayer = ({
     }, 3000);
   }, [isPlaying]);
 
-  // Format time display
   const formatTime = (seconds) => {
     if (!seconds || isNaN(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);
@@ -354,7 +324,6 @@ const VideoPlayer = ({
       className={`video-player-container ${isFullscreen ? 'fullscreen' : ''} ${adPlaying ? 'ad-playing' : ''}`}
       onMouseMove={handleMouseMove}
     >
-      {/* Video Element */}
       <video
         ref={videoRef}
         className="video-js vjs-default-skin"
@@ -362,14 +331,12 @@ const VideoPlayer = ({
         webkit-playsinline="true"
       />
 
-      {/* Buffering Spinner */}
       {buffering && (
         <div className="buffering-overlay">
           <div className="spinner" />
         </div>
       )}
 
-      {/* Ad Overlay */}
       {adPlaying && (
         <div className="ad-overlay">
           <div className="ad-label">Advertisement &bull; {Math.ceil(adRemaining)}s</div>
@@ -383,9 +350,7 @@ const VideoPlayer = ({
         </div>
       )}
 
-      {/* Custom Controls */}
       <div className={`controls-overlay ${showControls || !isPlaying ? 'visible' : ''}`}>
-        {/* Progress Bar */}
         <div className="progress-container" onClick={handleSeek}>
           <div className="progress-bar">
             <div
@@ -399,7 +364,6 @@ const VideoPlayer = ({
           </div>
         </div>
 
-        {/* Control Buttons */}
         <div className="controls-row">
           <div className="controls-left">
             <button className="control-btn" onClick={togglePlay}>
@@ -485,7 +449,7 @@ const VideoPlayer = ({
             </button>
 
             <button className="control-btn" onClick={toggleFullscreen}>
-              {isFullscreen ? '⛶' : '⛶'}
+              ⛶
             </button>
           </div>
         </div>
