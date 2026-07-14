@@ -1,0 +1,39 @@
+# Render.com Blueprint for Video Streaming Backend
+# Deploy with: https://dashboard.render.com/blueprint
+
+services:
+  - type: web
+    name: video-streaming-backend
+    runtime: node
+    region: oregon
+    plan: starter
+    buildCommand: npm install
+    startCommand: node src/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: ALLOWED_ORIGINS
+        value: https://your-frontend.vercel.app
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: video-cache
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          type: redis
+          name: video-cache
+          property: port
+    disk:
+      name: streams
+      mountPath: /opt/render/project/src/streams
+      sizeGB: 10
+    healthCheckPath: /health
+
+  - type: redis
+    name: video-cache
+    region: oregon
+    plan: free
+    ipAllowList: []

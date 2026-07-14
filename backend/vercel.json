@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "name": "video-streaming-backend",
+  "builds": [
+    {
+      "src": "src/server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/streams/(.*)",
+      "dest": "/src/server.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/src/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/src/server.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
