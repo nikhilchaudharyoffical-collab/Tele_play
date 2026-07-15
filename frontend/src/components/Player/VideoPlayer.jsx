@@ -234,6 +234,29 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
     setShowHoverPreview(false);
   };
 
+  // Touch equivalent of mousedown, starting a drag. Attached natively below
+  // (not via onTouchStart prop) with { passive: false } so preventDefault
+  // actually works — React's synthetic touch handlers are passive by
+  // default and silently ignore preventDefault, which is what let the
+  // page's scroll/bounce gesture steal the touch after the first move.
+  // That's why only a single tap seemed to work and holding+dragging did
+  // nothing: the drag never got a chance to keep tracking the finger.
+  const handleProgressTouchStart = (e) => {
+    if (adPlaying || !duration) return;
+    e.preventDefault();
+    isDraggingRef.current = true;
+    const pct = getSeekPercent(e.touches[0].clientX);
+    setCurrentTime(pct * duration);
+  };
+
+  useEffect(() => {
+    const el = progressRef.current;
+    if (!el) return;
+    el.addEventListener('touchstart', handleProgressTouchStart, { passive: false });
+    return () => el.removeEventListener('touchstart', handleProgressTouchStart);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [duration, adPlaying]);
+
   useEffect(() => {
     const onMouseUp = (e) => {
       if (isDraggingRef.current && progressRef.current && duration) {
@@ -253,6 +276,35 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
     return () => {
       window.removeEventListener('mouseup', onMouseUp);
       window.removeEventListener('mousemove', onMouseMove);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [duration]);
+
+  // Touch version of the same window-level tracking. Must be attached
+  // natively with { passive: false } — React's synthetic touch props are
+  // passive and silently ignore preventDefault, which is what let the page
+  // scroll/bounce steal the gesture after the first touchmove on mobile.
+  useEffect(() => {
+    const onTouchMove = (e) => {
+      if (isDraggingRef.current && progressRef.current && duration) {
+        e.preventDefault();
+        const pct = getSeekPercent(e.touches[0].clientX);
+        setCurrentTime(pct * duration);
+      }
+    };
+    const onTouchEnd = (e) => {
+      if (isDraggingRef.current && progressRef.current && duration) {
+        const touch = e.changedTouches[0];
+        const pct = getSeekPercent(touch.clientX);
+        commitSeek(pct);
+      }
+      isDraggingRef.current = false;
+    };
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('touchend', onTouchEnd);
+    return () => {
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration]);
