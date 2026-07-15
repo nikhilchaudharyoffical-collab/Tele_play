@@ -4,9 +4,7 @@ import 'video.js/dist/video-js.css';
 import Hls from 'hls.js';
 import './VideoPlayer.css';
 
-// ═══════════════════════════════════════════════════════════════════════════
 // SVG ICONS
-// ═══════════════════════════════════════════════════════════════════════════
 const PlayIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
 );
@@ -28,19 +26,19 @@ const FullscreenIcon = () => (
 const FullscreenExitIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
 );
-const QualityIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7v-7zm4-3h2v10h-2V7zm4 6h2v4h-2v-4z"/></svg>
-);
-const SpeedIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 4 16.25V12H2v8h8v-2H5.25A8 8 0 0 1 20.38 8.57z"/></svg>
+const SettingsIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
 );
 const PipIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"/></svg>
 );
+const BackIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+);
+const ChevronRightIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+);
 
-// ═══════════════════════════════════════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════════════════════
 const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false, onReady, onError }) => {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
@@ -63,9 +61,9 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
   const [isReady, setIsReady] = useState(false);
   const [currentQuality, setCurrentQuality] = useState('auto');
   const [availableQualities, setAvailableQualities] = useState([]);
-  const [showQualityMenu, setShowQualityMenu] = useState(false);
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const [settingsSubMenu, setSettingsSubMenu] = useState(null); // null | 'quality' | 'speed'
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const [adPlaying, setAdPlaying] = useState(false);
   const [adRemaining, setAdRemaining] = useState(0);
   const [adSkipable, setAdSkipable] = useState(false);
@@ -196,12 +194,17 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
     return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
   };
 
+  const seekToPercent = (pct) => {
+    const time = pct * duration;
+    setCurrentTime(time);
+    if (playerRef.current) playerRef.current.currentTime(time);
+  };
+
   const handleProgressMouseDown = (e) => {
-    if (adPlaying) return;
+    if (adPlaying || !duration) return;
     isDraggingRef.current = true;
     const pct = getSeekPercent(e.clientX);
-    setCurrentTime(pct * duration);
-    if (playerRef.current) playerRef.current.currentTime(pct * duration);
+    seekToPercent(pct);
   };
 
   const handleProgressMouseMove = (e) => {
@@ -209,26 +212,33 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
     setHoverTime(pct * duration);
     setShowHoverPreview(true);
     if (isDraggingRef.current) {
-      setCurrentTime(pct * duration);
-      if (playerRef.current) playerRef.current.currentTime(pct * duration);
+      seekToPercent(pct);
     }
   };
 
-  const handleProgressMouseUp = () => { isDraggingRef.current = false; };
-  const handleProgressMouseLeave = () => { setShowHoverPreview(false); isDraggingRef.current = false; };
+  const handleProgressMouseUp = () => {
+    isDraggingRef.current = false;
+  };
+
+  const handleProgressMouseLeave = () => {
+    setShowHoverPreview(false);
+    isDraggingRef.current = false;
+  };
 
   useEffect(() => {
     const onMouseUp = () => { isDraggingRef.current = false; };
     const onMouseMove = (e) => {
-      if (isDraggingRef.current && progressRef.current) {
+      if (isDraggingRef.current && progressRef.current && duration) {
         const pct = getSeekPercent(e.clientX);
-        setCurrentTime(pct * duration);
-        if (playerRef.current) playerRef.current.currentTime(pct * duration);
+        seekToPercent(pct);
       }
     };
     window.addEventListener('mouseup', onMouseUp);
     window.addEventListener('mousemove', onMouseMove);
-    return () => { window.removeEventListener('mouseup', onMouseUp); window.removeEventListener('mousemove', onMouseMove); };
+    return () => {
+      window.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('mousemove', onMouseMove);
+    };
   }, [duration]);
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -247,6 +257,7 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
   }, []);
 
   const toggleMute = useCallback(() => { playerRef.current.muted(!playerRef.current.muted()); }, []);
+
   const toggleFullscreen = useCallback(() => {
     if (!document.fullscreenElement) containerRef.current.requestFullscreen?.();
     else document.exitFullscreen?.();
@@ -258,13 +269,11 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
     if (quality === 'auto') { hls.currentLevel = -1; hls.loadLevel = -1; }
     else { const lvl = availableQualities.findIndex(q => q.height === parseInt(quality.replace('p',''),10)); if (lvl !== -1) hls.currentLevel = lvl; }
     setCurrentQuality(quality);
-    setShowQualityMenu(false);
   }, [availableQualities]);
 
   const changeSpeed = useCallback((speed) => {
     playerRef.current.playbackRate(speed);
     setPlaybackSpeed(speed);
-    setShowSpeedMenu(false);
   }, []);
 
   const skipAd = useCallback(() => { console.log('Skip ad'); }, []);
@@ -274,6 +283,16 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
     clearTimeout(controlsTimeoutRef.current);
     controlsTimeoutRef.current = setTimeout(() => { if (isPlaying) setShowControls(false); }, 3000);
   }, [isPlaying]);
+
+  const openSettings = () => {
+    setShowSettingsMenu(true);
+    setSettingsSubMenu(null);
+  };
+
+  const closeSettings = () => {
+    setShowSettingsMenu(false);
+    setSettingsSubMenu(null);
+  };
 
   const formatTime = (s) => {
     if (!s || isNaN(s)) return '0:00';
@@ -333,23 +352,45 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
           </div>
 
           <div className="controls-right">
-            {/* QUALITY MENU */}
+            {/* SETTINGS MENU - Main Menu → Sub Menu */}
             <div className="menu-container">
-              <button className="control-btn" onClick={() => { setShowQualityMenu(!showQualityMenu); setShowSpeedMenu(false); }} title="Quality"><QualityIcon /></button>
-              {showQualityMenu && (
-                <div className="dropdown-menu scrollable-menu">
-                  <button className={`dropdown-item ${currentQuality === 'auto' ? 'active' : ''}`} onClick={() => changeQuality('auto')}>Auto</button>
-                  {availableQualities.map(q => (<button key={q.index} className={`dropdown-item ${currentQuality === q.label ? 'active' : ''}`} onClick={() => changeQuality(q.label)}>{q.label}</button>))}
+              <button className="control-btn" onClick={openSettings} title="Settings"><SettingsIcon /></button>
+
+              {showSettingsMenu && !settingsSubMenu && (
+                <div className="dropdown-menu settings-main-menu" onMouseLeave={closeSettings}>
+                  <button className="dropdown-item settings-option" onClick={() => setSettingsSubMenu('quality')}>
+                    <span>Quality</span>
+                    <span className="settings-current">{currentQuality === 'auto' ? 'Auto' : currentQuality} <ChevronRightIcon /></span>
+                  </button>
+                  <button className="dropdown-item settings-option" onClick={() => setSettingsSubMenu('speed')}>
+                    <span>Speed</span>
+                    <span className="settings-current">{playbackSpeed === 1 ? 'Normal' : `${playbackSpeed}x`} <ChevronRightIcon /></span>
+                  </button>
                 </div>
               )}
-            </div>
 
-            {/* SPEED MENU */}
-            <div className="menu-container">
-              <button className="control-btn" onClick={() => { setShowSpeedMenu(!showSpeedMenu); setShowQualityMenu(false); }} title="Speed"><SpeedIcon /></button>
-              {showSpeedMenu && (
-                <div className="dropdown-menu scrollable-menu">
-                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map(speed => (<button key={speed} className={`dropdown-item ${playbackSpeed === speed ? 'active' : ''}`} onClick={() => changeSpeed(speed)}>{speed === 1 ? 'Normal' : `${speed}x`}</button>))}
+              {showSettingsMenu && settingsSubMenu === 'quality' && (
+                <div className="dropdown-menu settings-sub-menu" onMouseLeave={closeSettings}>
+                  <button className="dropdown-item settings-back" onClick={() => setSettingsSubMenu(null)}>
+                    <BackIcon /> Quality
+                  </button>
+                  <div className="menu-divider" />
+                  <button className={`dropdown-item ${currentQuality === 'auto' ? 'active' : ''}`} onClick={() => { changeQuality('auto'); closeSettings(); }}>Auto</button>
+                  {availableQualities.map(q => (
+                    <button key={q.index} className={`dropdown-item ${currentQuality === q.label ? 'active' : ''}`} onClick={() => { changeQuality(q.label); closeSettings(); }}>{q.label}</button>
+                  ))}
+                </div>
+              )}
+
+              {showSettingsMenu && settingsSubMenu === 'speed' && (
+                <div className="dropdown-menu settings-sub-menu" onMouseLeave={closeSettings}>
+                  <button className="dropdown-item settings-back" onClick={() => setSettingsSubMenu(null)}>
+                    <BackIcon /> Speed
+                  </button>
+                  <div className="menu-divider" />
+                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map(speed => (
+                    <button key={speed} className={`dropdown-item ${playbackSpeed === speed ? 'active' : ''}`} onClick={() => { changeSpeed(speed); closeSettings(); }}>{speed === 1 ? 'Normal' : `${speed}x`}</button>
+                  ))}
                 </div>
               )}
             </div>

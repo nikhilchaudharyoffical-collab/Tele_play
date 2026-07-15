@@ -378,7 +378,7 @@
 }
 
 /* ═════════════════════════════════════════════════════════════════════
-   DROPDOWN MENUS - SCROLLABLE
+   SETTINGS MENU - Main → Sub Menu Navigation
    ═════════════════════════════════════════════════════════════════════ */
 
 .menu-container {
@@ -392,8 +392,8 @@
   background: rgba(20, 20, 20, 0.98);
   border-radius: 8px;
   padding: 6px 0;
-  min-width: 120px;
-  max-height: 200px;
+  min-width: 160px;
+  max-height: 240px;
   overflow-y: auto;
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -402,7 +402,7 @@
   animation: menuSlideUp 0.15s ease;
 }
 
-/* Scrollbar for dropdown */
+/* Scrollbar */
 .dropdown-menu::-webkit-scrollbar {
   width: 4px;
 }
@@ -425,6 +425,41 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Main Menu Items */
+.settings-option {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-current {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #aaa;
+  font-size: 12px;
+}
+
+/* Back Button */
+.settings-back {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  color: #0ea5e9 !important;
+  font-weight: 600;
+}
+
+.settings-back:hover {
+  background: rgba(14, 165, 233, 0.08) !important;
+}
+
+.menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px 8px;
+}
+
+/* Dropdown Items */
 .dropdown-item {
   display: block;
   width: 100%;
@@ -503,8 +538,8 @@
   }
 
   .dropdown-menu {
-    max-height: 160px;
-    min-width: 100px;
+    max-height: 200px;
+    min-width: 140px;
   }
 }
 
