@@ -45,6 +45,7 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
   const playerRef = useRef(null);
   const hlsRef = useRef(null);
   const progressRef = useRef(null);
+  const settingsMenuRef = useRef(null);
   const isDraggingRef = useRef(false);
   const rafRef = useRef(null);
   const controlsTimeoutRef = useRef(null);
@@ -194,7 +195,12 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
     return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
   };
 
-  const seekToPercent = (pct) => {
+  // While dragging we only move the visual scrubber (setCurrentTime).
+  // The actual player.currentTime() seek is committed once, on mouse up.
+  // Calling player.currentTime() on every mousemove was firing many rapid
+  // real seeks on the HLS/MSE buffer, which is what caused the jumpy/janky
+  // scrubbing instead of a smooth drag.
+  const commitSeek = (pct) => {
     const time = pct * duration;
     setCurrentTime(time);
     if (playerRef.current) playerRef.current.currentTime(time);
@@ -204,7 +210,7 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
     if (adPlaying || !duration) return;
     isDraggingRef.current = true;
     const pct = getSeekPercent(e.clientX);
-    seekToPercent(pct);
+    setCurrentTime(pct * duration); // visual only, no seek yet
   };
 
   const handleProgressMouseMove = (e) => {
@@ -212,25 +218,34 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
     setHoverTime(pct * duration);
     setShowHoverPreview(true);
     if (isDraggingRef.current) {
-      seekToPercent(pct);
+      setCurrentTime(pct * duration); // visual only while dragging
     }
   };
 
-  const handleProgressMouseUp = () => {
+  const handleProgressMouseUp = (e) => {
+    if (isDraggingRef.current) {
+      const pct = getSeekPercent(e.clientX);
+      commitSeek(pct); // actual seek happens here, once
+    }
     isDraggingRef.current = false;
   };
 
   const handleProgressMouseLeave = () => {
     setShowHoverPreview(false);
-    isDraggingRef.current = false;
   };
 
   useEffect(() => {
-    const onMouseUp = () => { isDraggingRef.current = false; };
+    const onMouseUp = (e) => {
+      if (isDraggingRef.current && progressRef.current && duration) {
+        const pct = getSeekPercent(e.clientX);
+        commitSeek(pct); // actual seek happens here, once
+      }
+      isDraggingRef.current = false;
+    };
     const onMouseMove = (e) => {
       if (isDraggingRef.current && progressRef.current && duration) {
         const pct = getSeekPercent(e.clientX);
-        seekToPercent(pct);
+        setCurrentTime(pct * duration); // visual only while dragging
       }
     };
     window.addEventListener('mouseup', onMouseUp);
@@ -286,7 +301,7 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
   }, [isPlaying]);
 
   const openSettings = () => {
-    setShowSettingsMenu(true);
+    setShowSettingsMenu((prev) => !prev); // click toggles open/closed
     setSettingsSubMenu(null);
   };
 
@@ -294,6 +309,24 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
     setShowSettingsMenu(false);
     setSettingsSubMenu(null);
   };
+
+  // Settings menu was relying only on onMouseLeave, which never fires on
+  // click/touch and left the menu stuck open. Close it on any click/tap
+  // outside the menu instead (covers mouse and touch devices).
+  useEffect(() => {
+    if (!showSettingsMenu) return;
+    const handleOutside = (e) => {
+      if (settingsMenuRef.current && !settingsMenuRef.current.contains(e.target)) {
+        closeSettings();
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    document.addEventListener('touchstart', handleOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      document.removeEventListener('touchstart', handleOutside);
+    };
+  }, [showSettingsMenu]);
 
   const formatTime = (s) => {
     if (!s || isNaN(s)) return '0:00';
@@ -354,11 +387,11 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
 
           <div className="controls-right">
             {/* SETTINGS MENU - Main Menu → Sub Menu */}
-            <div className="menu-container">
-              <button className="control-btn" onClick={openSettings} title="Settings"><SettingsIcon /></button>
+            <div className="menu-container" ref={settingsMenuRef}>
+              <button className="control-btn" onClick={(e) => { e.stopPropagation(); openSettings(); }} title="Settings"><SettingsIcon /></button>
 
               {showSettingsMenu && !settingsSubMenu && (
-                <div className="dropdown-menu settings-main-menu" onMouseLeave={closeSettings}>
+                <div className="dropdown-menu settings-main-menu">
                   <button className="dropdown-item settings-option" onClick={() => setSettingsSubMenu('quality')}>
                     <span>Quality</span>
                     <span className="settings-current">{currentQuality === 'auto' ? 'Auto' : currentQuality} <ChevronRightIcon /></span>
@@ -371,7 +404,7 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
               )}
 
               {showSettingsMenu && settingsSubMenu === 'quality' && (
-                <div className="dropdown-menu settings-sub-menu" onMouseLeave={closeSettings}>
+                <div className="dropdown-menu settings-sub-menu">
                   <button className="dropdown-item settings-back" onClick={() => setSettingsSubMenu(null)}>
                     <BackIcon /> Quality
                   </button>
@@ -384,7 +417,7 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
               )}
 
               {showSettingsMenu && settingsSubMenu === 'speed' && (
-                <div className="dropdown-menu settings-sub-menu" onMouseLeave={closeSettings}>
+                <div className="dropdown-menu settings-sub-menu">
                   <button className="dropdown-item settings-back" onClick={() => setSettingsSubMenu(null)}>
                     <BackIcon /> Speed
                   </button>
