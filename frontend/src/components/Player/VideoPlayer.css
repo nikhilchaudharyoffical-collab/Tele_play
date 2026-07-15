@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   VIDEO PLAYER PRO - PROFESSIONAL STYLES
+   VIDEO PLAYER PRO - SKY BLUE THEME
    ═══════════════════════════════════════════════════════════════════════ */
 
 .video-player-container {
@@ -18,16 +18,14 @@
 
 .video-player-container.fullscreen {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   max-width: none;
   border-radius: 0;
   z-index: 9999;
 }
 
-/* Hide ALL default Video.js controls including big play button */
+/* Hide ALL default Video.js controls */
 .video-js .vjs-control-bar,
 .video-js .vjs-big-play-button,
 .video-js .vjs-loading-spinner,
@@ -42,15 +40,12 @@
 }
 
 /* ═════════════════════════════════════════════════════════════════════
-   SINGLE LOADER (Custom Only - No Double Loader)
+   LOADER - SKY BLUE
    ═════════════════════════════════════════════════════════════════════ */
 
 .buffering-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -60,7 +55,6 @@
   backdrop-filter: blur(2px);
 }
 
-/* Ring Loader */
 .loader-ring {
   display: inline-block;
   position: relative;
@@ -104,18 +98,14 @@
 
 .ad-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   z-index: 20;
   pointer-events: none;
 }
 
 .ad-label {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 20px; left: 20px;
   background: rgba(0, 0, 0, 0.75);
   color: #fff;
   padding: 6px 14px;
@@ -127,8 +117,7 @@
 
 .skip-ad-btn {
   position: absolute;
-  bottom: 80px;
-  right: 20px;
+  bottom: 80px; right: 20px;
   background: rgba(255, 255, 255, 0.95);
   color: #000;
   border: none;
@@ -139,9 +128,6 @@
   cursor: pointer;
   pointer-events: all;
   transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
 .skip-ad-btn:hover {
@@ -151,8 +137,7 @@
 
 .skip-countdown {
   position: absolute;
-  bottom: 80px;
-  right: 20px;
+  bottom: 80px; right: 20px;
   background: rgba(0, 0, 0, 0.75);
   color: #fff;
   padding: 10px 18px;
@@ -167,11 +152,9 @@
 
 .controls-overlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 0; left: 0; right: 0;
   padding: 20px 16px 12px;
-  background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.3) 30%, rgba(0, 0, 0, 0.85) 100%);
+  background: linear-gradient(transparent 0%, rgba(0,0,0,0.3) 30%, rgba(0,0,0,0.85) 100%);
   opacity: 0;
   transition: opacity 0.25s ease;
   z-index: 15;
@@ -182,7 +165,7 @@
 }
 
 /* ═════════════════════════════════════════════════════════════════════
-   PROGRESS BAR - SMOOTH SEEK
+   PROGRESS BAR - SMOOTH SEEK (SKY BLUE)
    ═════════════════════════════════════════════════════════════════════ */
 
 .progress-container {
@@ -211,40 +194,24 @@
 
 .progress-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(255, 255, 255, 0.15);
   border-radius: inherit;
 }
 
-.progress-buffer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: inherit;
-  width: 0%;
-  transition: width 0.3s ease;
-}
-
 .progress-fill {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   height: 100%;
   background: #0ea5e9;
   border-radius: inherit;
-  transition: width 0.1s linear;
+  transition: width 0.05s linear;
   box-shadow: 0 0 6px rgba(14, 165, 233, 0.4);
 }
 
 .progress-hover {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   height: 100%;
   background: rgba(255, 255, 255, 0.3);
   border-radius: inherit;
@@ -274,7 +241,6 @@
   opacity: 1;
 }
 
-/* Time Tooltip on Hover */
 .time-tooltip {
   position: absolute;
   top: -32px;
@@ -290,7 +256,7 @@
 }
 
 /* ═════════════════════════════════════════════════════════════════════
-   CONTROL BUTTONS ROW
+   CONTROL BUTTONS
    ═════════════════════════════════════════════════════════════════════ */
 
 .controls-row {
@@ -411,7 +377,10 @@
   margin: 0 3px;
 }
 
-/* Dropdown Menus */
+/* ═════════════════════════════════════════════════════════════════════
+   DROPDOWN MENUS - SCROLLABLE
+   ═════════════════════════════════════════════════════════════════════ */
+
 .menu-container {
   position: relative;
 }
@@ -424,6 +393,8 @@
   border-radius: 8px;
   padding: 6px 0;
   min-width: 120px;
+  max-height: 200px;
+  overflow-y: auto;
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
@@ -431,15 +402,27 @@
   animation: menuSlideUp 0.15s ease;
 }
 
+/* Scrollbar for dropdown */
+.dropdown-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 @keyframes menuSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .dropdown-item {
@@ -454,6 +437,7 @@
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: inherit;
+  white-space: nowrap;
 }
 
 .dropdown-item:hover {
@@ -470,34 +454,6 @@
 /* ═════════════════════════════════════════════════════════════════════
    MOBILE RESPONSIVE
    ═════════════════════════════════════════════════════════════════════ */
-
-
-/* ═════════════════════════════════════════════════════════════════════
-   SETTINGS MENU (Quality + Speed combined)
-   ═════════════════════════════════════════════════════════════════════ */
-
-.settings-menu {
-  min-width: 160px;
-}
-
-.menu-section {
-  padding: 4px 0;
-}
-
-.menu-section-title {
-  padding: 8px 16px 4px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #0ea5e9;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.menu-divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 4px 8px;
-}
 
 @media (max-width: 768px) {
   .video-player-container {
@@ -545,10 +501,15 @@
     margin: 4px;
     border-width: 3px;
   }
+
+  .dropdown-menu {
+    max-height: 160px;
+    min-width: 100px;
+  }
 }
 
 /* ═════════════════════════════════════════════════════════════════════
-   KEYBOARD FOCUS STYLES
+   KEYBOARD FOCUS
    ═════════════════════════════════════════════════════════════════════ */
 
 .control-btn:focus-visible,
