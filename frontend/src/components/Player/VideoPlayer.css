@@ -75,10 +75,10 @@
   width: 51px;
   height: 51px;
   margin: 6px;
-  border: 4px solid #e50914;
+  border: 4px solid #0ea5e9;
   border-radius: 50%;
   animation: loader-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #e50914 transparent transparent transparent;
+  border-color: #0ea5e9 transparent transparent transparent;
 }
 
 .loader-ring div:nth-child(1) { animation-delay: -0.45s; }
@@ -235,10 +235,10 @@
   top: 0;
   left: 0;
   height: 100%;
-  background: #e50914;
+  background: #0ea5e9;
   border-radius: inherit;
   transition: width 0.1s linear;
-  box-shadow: 0 0 6px rgba(229, 9, 20, 0.4);
+  box-shadow: 0 0 6px rgba(14, 165, 233, 0.4);
 }
 
 .progress-hover {
@@ -257,11 +257,11 @@
   transform: translate(-50%, -50%);
   width: 16px;
   height: 16px;
-  background: #e50914;
+  background: #0ea5e9;
   border-radius: 50%;
   opacity: 0;
   transition: opacity 0.15s ease, transform 0.15s ease;
-  box-shadow: 0 0 8px rgba(229, 9, 20, 0.6);
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.6);
   cursor: grab;
 }
 
@@ -462,14 +462,42 @@
 }
 
 .dropdown-item.active {
-  color: #e50914;
+  color: #0ea5e9;
   font-weight: 600;
-  background: rgba(229, 9, 20, 0.08);
+  background: rgba(14, 165, 233, 0.08);
 }
 
 /* ═════════════════════════════════════════════════════════════════════
    MOBILE RESPONSIVE
    ═════════════════════════════════════════════════════════════════════ */
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   SETTINGS MENU (Quality + Speed combined)
+   ═════════════════════════════════════════════════════════════════════ */
+
+.settings-menu {
+  min-width: 160px;
+}
+
+.menu-section {
+  padding: 4px 0;
+}
+
+.menu-section-title {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #0ea5e9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px 8px;
+}
 
 @media (max-width: 768px) {
   .video-player-container {
@@ -526,7 +554,7 @@
 .control-btn:focus-visible,
 .dropdown-item:focus-visible,
 .skip-ad-btn:focus-visible {
-  outline: 2px solid #e50914;
+  outline: 2px solid #0ea5e9;
   outline-offset: 2px;
 }
 

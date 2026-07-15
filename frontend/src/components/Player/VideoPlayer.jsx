@@ -55,12 +55,6 @@ const PipIcon = () => (
   </svg>
 );
 
-const SpeedIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 4 16.25V12H2v8h8v-2H5.25A8 8 0 0 1 20.38 8.57z"/>
-  </svg>
-);
-
 const QualityIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
     <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7v-7zm4-3h2v10h-2V7zm4 6h2v4h-2v-4z"/>
@@ -105,8 +99,7 @@ const VideoPlayer = ({
   const [availableQualities, setAvailableQualities] = useState([]);
   const [showQualityMenu, setShowQualityMenu] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
-  const [adPlaying, setAdPlaying] = useState(false);
+    const [adPlaying, setAdPlaying] = useState(false);
   const [adRemaining, setAdRemaining] = useState(0);
   const [adSkipable, setAdSkipable] = useState(false);
   const [adSkipCountdown, setAdSkipCountdown] = useState(0);
@@ -543,51 +536,44 @@ const VideoPlayer = ({
             <div className="menu-container">
               <button
                 className="control-btn"
-                onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-                title="Playback Speed"
-              >
-                <SpeedIcon />
-              </button>
-              {showSpeedMenu && (
-                <div className="dropdown-menu">
-                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map(speed => (
-                    <button
-                      key={speed}
-                      className={`dropdown-item ${playbackSpeed === speed ? 'active' : ''}`}
-                      onClick={() => changeSpeed(speed)}
-                    >
-                      {speed === 1 ? 'Normal' : `${speed}x`}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="menu-container">
-              <button
-                className="control-btn"
                 onClick={() => setShowQualityMenu(!showQualityMenu)}
-                title="Quality"
+                title="Settings"
               >
                 <QualityIcon />
               </button>
               {showQualityMenu && (
-                <div className="dropdown-menu">
-                  <button
-                    className={`dropdown-item ${currentQuality === 'auto' ? 'active' : ''}`}
-                    onClick={() => changeQuality('auto')}
-                  >
-                    Auto
-                  </button>
-                  {availableQualities.map(q => (
+                <div className="dropdown-menu settings-menu">
+                  <div className="menu-section">
+                    <div className="menu-section-title">Quality</div>
                     <button
-                      key={q.index}
-                      className={`dropdown-item ${currentQuality === q.label ? 'active' : ''}`}
-                      onClick={() => changeQuality(q.label)}
+                      className={`dropdown-item ${currentQuality === 'auto' ? 'active' : ''}`}
+                      onClick={() => changeQuality('auto')}
                     >
-                      {q.label}
+                      Auto
                     </button>
-                  ))}
+                    {availableQualities.map(q => (
+                      <button
+                        key={q.index}
+                        className={`dropdown-item ${currentQuality === q.label ? 'active' : ''}`}
+                        onClick={() => changeQuality(q.label)}
+                      >
+                        {q.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="menu-divider" />
+                  <div className="menu-section">
+                    <div className="menu-section-title">Speed</div>
+                    {[0.5, 0.75, 1, 1.25, 1.5, 2].map(speed => (
+                      <button
+                        key={speed}
+                        className={`dropdown-item ${playbackSpeed === speed ? 'active' : ''}`}
+                        onClick={() => changeSpeed(speed)}
+                      >
+                        {speed === 1 ? 'Normal' : `${speed}x`}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
