@@ -403,7 +403,7 @@ const VideoPlayer = ({
   const changeSpeed = useCallback((speed) => {
     playerRef.current.playbackRate(speed);
     setPlaybackSpeed(speed);
-    setShowSpeedMenu(false);
+    setShowQualityMenu(false);
   }, []);
 
   const skipAd = useCallback(() => {
