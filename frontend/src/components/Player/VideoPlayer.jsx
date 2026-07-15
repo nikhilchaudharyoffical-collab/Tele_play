@@ -239,6 +239,7 @@ const VideoPlayer = ({ src, vastTagUrl, poster, autoPlay = false, muted = false,
       window.removeEventListener('mouseup', onMouseUp);
       window.removeEventListener('mousemove', onMouseMove);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration]);
 
   // ═══════════════════════════════════════════════════════════════════════
