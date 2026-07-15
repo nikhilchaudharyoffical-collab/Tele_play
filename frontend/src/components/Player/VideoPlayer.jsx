@@ -4,6 +4,84 @@ import 'video.js/dist/video-js.css';
 import Hls from 'hls.js';
 import './VideoPlayer.css';
 
+// ═══════════════════════════════════════════════════════════════════════════
+// PROFESSIONAL SVG ICONS
+// ═══════════════════════════════════════════════════════════════════════════
+const PlayIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M8 5v14l11-7z"/>
+  </svg>
+);
+
+const PauseIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+  </svg>
+);
+
+const VolumeHighIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+  </svg>
+);
+
+const VolumeLowIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>
+  </svg>
+);
+
+const VolumeMuteIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+  </svg>
+);
+
+const FullscreenIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+  </svg>
+);
+
+const FullscreenExitIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+  </svg>
+);
+
+const SettingsIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+  </svg>
+);
+
+const PipIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"/>
+  </svg>
+);
+
+const SpeedIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 4 16.25V12H2v8h8v-2H5.25A8 8 0 0 1 20.38 8.57z"/>
+  </svg>
+);
+
+const QualityIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7v-7zm4-3h2v10h-2V7zm4 6h2v4h-2v-4z"/>
+  </svg>
+);
+
+const SkipForwardIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>
+  </svg>
+);
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════════════════════
 const VideoPlayer = ({
   src,
   vastTagUrl,
@@ -17,8 +95,9 @@ const VideoPlayer = ({
   const containerRef = useRef(null);
   const playerRef = useRef(null);
   const hlsRef = useRef(null);
+  const progressRef = useRef(null);
+  const isDraggingRef = useRef(false);
 
-  // UI State
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -27,6 +106,7 @@ const VideoPlayer = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [buffering, setBuffering] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [currentQuality, setCurrentQuality] = useState('auto');
   const [availableQualities, setAvailableQualities] = useState([]);
   const [showQualityMenu, setShowQualityMenu] = useState(false);
@@ -36,9 +116,26 @@ const VideoPlayer = ({
   const [adRemaining, setAdRemaining] = useState(0);
   const [adSkipable, setAdSkipable] = useState(false);
   const [adSkipCountdown, setAdSkipCountdown] = useState(0);
+  const [hoverTime, setHoverTime] = useState(0);
+  const [showHoverPreview, setShowHoverPreview] = useState(false);
 
   const controlsTimeoutRef = useRef(null);
   const adIntervalRef = useRef(null);
+  const rafRef = useRef(null);
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // SMOOTH PROGRESS UPDATE (RAF-based)
+  // ═══════════════════════════════════════════════════════════════════════
+  useEffect(() => {
+    const updateProgress = () => {
+      if (playerRef.current && !isDraggingRef.current) {
+        setCurrentTime(playerRef.current.currentTime());
+      }
+      rafRef.current = requestAnimationFrame(updateProgress);
+    };
+    rafRef.current = requestAnimationFrame(updateProgress);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
 
   // ═══════════════════════════════════════════════════════════════════════
   // INITIALIZE PLAYER
@@ -66,6 +163,7 @@ const VideoPlayer = ({
 
     playerRef.current = player;
 
+    // HLS.js setup
     if (Hls.isSupported()) {
       const hls = new Hls({
         debug: false,
@@ -90,6 +188,8 @@ const VideoPlayer = ({
           label: `${level.height}p`,
         }));
         setAvailableQualities(levels);
+        setIsReady(true);
+        setBuffering(false);
       });
 
       hls.on(Hls.Events.BUFFER_STALLED, () => setBuffering(true));
@@ -97,6 +197,8 @@ const VideoPlayer = ({
       hls.on(Hls.Events.FRAG_BUFFERED, () => setBuffering(false));
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = src;
+      setIsReady(true);
+      setBuffering(false);
     }
 
     // IMA SDK
@@ -106,7 +208,6 @@ const VideoPlayer = ({
 
     player.on('play', () => setIsPlaying(true));
     player.on('pause', () => setIsPlaying(false));
-    player.on('timeupdate', () => setCurrentTime(player.currentTime()));
     player.on('durationchange', () => setDuration(player.duration()));
     player.on('volumechange', () => {
       setVolume(player.volume());
@@ -114,6 +215,10 @@ const VideoPlayer = ({
     });
     player.on('waiting', () => setBuffering(true));
     player.on('playing', () => setBuffering(false));
+    player.on('canplay', () => {
+      setIsReady(true);
+      setBuffering(false);
+    });
     player.on('error', (e) => {
       if (onError) onError(e);
     });
@@ -127,12 +232,8 @@ const VideoPlayer = ({
 
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      if (hlsRef.current) {
-        hlsRef.current.destroy();
-      }
-      if (playerRef.current) {
-        playerRef.current.dispose();
-      }
+      if (hlsRef.current) hlsRef.current.destroy();
+      if (playerRef.current) playerRef.current.dispose();
       clearTimeout(controlsTimeoutRef.current);
       clearInterval(adIntervalRef.current);
     };
@@ -144,7 +245,6 @@ const VideoPlayer = ({
   // ═══════════════════════════════════════════════════════════════════
   const initIMA = (player, tagUrl) => {
     const video = player.el().querySelector('video');
-
     const adContainer = document.createElement('div');
     adContainer.className = 'ad-container';
     adContainer.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:20;pointer-events:none;';
@@ -159,50 +259,39 @@ const VideoPlayer = ({
         (adsManagerLoadedEvent) => {
           const adsRenderingSettings = new window.google.ima.AdsRenderingSettings();
           adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
-
           const am = adsManagerLoadedEvent.getAdsManager(video, adsRenderingSettings);
 
           am.addEventListener(window.google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
             setAdPlaying(true);
             player.pause();
           });
-
           am.addEventListener(window.google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
             setAdPlaying(false);
             player.play();
           });
-
           am.addEventListener(window.google.ima.AdEvent.Type.STARTED, (event) => {
             const ad = event.getAd();
             setAdRemaining(ad.getDuration());
-
             const skipOffset = ad.getSkipTimeOffset();
             if (skipOffset > 0) {
               setAdSkipCountdown(Math.ceil(skipOffset));
               const skipInterval = setInterval(() => {
                 setAdSkipCountdown(prev => {
-                  if (prev <= 1) {
-                    clearInterval(skipInterval);
-                    setAdSkipable(true);
-                    return 0;
-                  }
+                  if (prev <= 1) { clearInterval(skipInterval); setAdSkipable(true); return 0; }
                   return prev - 1;
                 });
               }, 1000);
             }
-
             adIntervalRef.current = setInterval(() => {
               setAdRemaining(prev => Math.max(0, prev - 1));
             }, 1000);
           });
-
           am.addEventListener(window.google.ima.AdEvent.Type.COMPLETE, () => {
             clearInterval(adIntervalRef.current);
             setAdPlaying(false);
             setAdSkipable(false);
           });
-
-          am.addEventListener(window.google.ima.AdErrorEvent.Type.AD_ERROR, (error) => {
+          am.addEventListener(window.google.ima.AdErrorEvent.Type.AD_ERROR, () => {
             setAdPlaying(false);
             player.play();
           });
@@ -210,9 +299,7 @@ const VideoPlayer = ({
           try {
             am.init(video.offsetWidth, video.offsetHeight, window.google.ima.ViewMode.NORMAL);
             am.start();
-          } catch (e) {
-            console.error('AdsManager error:', e);
-          }
+          } catch (e) { console.error('AdsManager error:', e); }
         }
       );
 
@@ -220,14 +307,65 @@ const VideoPlayer = ({
       adsRequest.adTagUrl = tagUrl;
       adsRequest.linearAdSlotWidth = video.offsetWidth;
       adsRequest.linearAdSlotHeight = video.offsetHeight;
-      adsRequest.nonLinearAdSlotWidth = video.offsetWidth;
-      adsRequest.nonLinearAdSlotHeight = video.offsetHeight / 3;
-
       adsLoader.requestAds(adsRequest);
-    } catch (e) {
-      console.error('IMA SDK error:', e);
+    } catch (e) { console.error('IMA SDK error:', e); }
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SEEK BAR - SMOOTH DRAG
+  // ═══════════════════════════════════════════════════════════════════
+  const getSeekPercent = (clientX) => {
+    const rect = progressRef.current.getBoundingClientRect();
+    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    return percent;
+  };
+
+  const handleProgressMouseDown = (e) => {
+    if (adPlaying) return;
+    isDraggingRef.current = true;
+    const percent = getSeekPercent(e.clientX);
+    setCurrentTime(percent * duration);
+  };
+
+  const handleProgressMouseMove = (e) => {
+    const percent = getSeekPercent(e.clientX);
+    setHoverTime(percent * duration);
+    setShowHoverPreview(true);
+    if (isDraggingRef.current) {
+      setCurrentTime(percent * duration);
     }
   };
+
+  const handleProgressMouseUp = (e) => {
+    if (isDraggingRef.current) {
+      const percent = getSeekPercent(e.clientX);
+      playerRef.current.currentTime(percent * duration);
+      isDraggingRef.current = false;
+    }
+  };
+
+  const handleProgressMouseLeave = () => {
+    setShowHoverPreview(false);
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false;
+    }
+  };
+
+  useEffect(() => {
+    const handleGlobalMouseUp = () => { isDraggingRef.current = false; };
+    const handleGlobalMouseMove = (e) => {
+      if (isDraggingRef.current && progressRef.current) {
+        const percent = getSeekPercent(e.clientX);
+        setCurrentTime(percent * duration);
+      }
+    };
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+    window.addEventListener('mousemove', handleGlobalMouseMove);
+    return () => {
+      window.removeEventListener('mouseup', handleGlobalMouseUp);
+      window.removeEventListener('mousemove', handleGlobalMouseMove);
+    };
+  }, [duration]);
 
   // ═══════════════════════════════════════════════════════════════════
   // CONTROLS
@@ -235,20 +373,8 @@ const VideoPlayer = ({
   const togglePlay = useCallback(() => {
     if (adPlaying) return;
     const player = playerRef.current;
-    if (player.paused()) {
-      player.play();
-    } else {
-      player.pause();
-    }
+    if (player.paused()) player.play(); else player.pause();
   }, [adPlaying]);
-
-  const handleSeek = useCallback((e) => {
-    if (adPlaying) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const percent = (e.clientX - rect.left) / rect.width;
-    const newTime = percent * duration;
-    playerRef.current.currentTime(newTime);
-  }, [duration, adPlaying]);
 
   const handleVolumeChange = useCallback((e) => {
     const newVolume = parseFloat(e.target.value);
@@ -274,7 +400,6 @@ const VideoPlayer = ({
   const changeQuality = useCallback((quality) => {
     const hls = hlsRef.current;
     if (!hls) return;
-
     if (quality === 'auto') {
       hls.currentLevel = -1;
       hls.loadLevel = -1;
@@ -282,9 +407,7 @@ const VideoPlayer = ({
       const level = availableQualities.findIndex(q =>
         q.height === parseInt(quality.replace('p', ''), 10)
       );
-      if (level !== -1) {
-        hls.currentLevel = level;
-      }
+      if (level !== -1) hls.currentLevel = level;
     }
     setCurrentQuality(quality);
     setShowQualityMenu(false);
@@ -297,7 +420,7 @@ const VideoPlayer = ({
   }, []);
 
   const skipAd = useCallback(() => {
-    console.log('Skip ad clicked');
+    console.log('Skip ad');
   }, []);
 
   const handleMouseMove = useCallback(() => {
@@ -315,6 +438,9 @@ const VideoPlayer = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const hoverPercent = duration > 0 ? (hoverTime / duration) * 100 : 0;
+
   // ═══════════════════════════════════════════════════════════════════
   // RENDER
   // ═══════════════════════════════════════════════════════════════════
@@ -331,18 +457,23 @@ const VideoPlayer = ({
         webkit-playsinline="true"
       />
 
-      {buffering && (
+      {/* SINGLE LOADER - Only when buffering AND not ready */}
+      {(buffering || !isReady) && (
         <div className="buffering-overlay">
-          <div className="spinner" />
+          <div className="loader-ring">
+            <div></div><div></div><div></div><div></div>
+          </div>
+          <p className="loader-text">{!isReady ? 'Loading...' : 'Buffering...'}</p>
         </div>
       )}
 
+      {/* Ad Overlay */}
       {adPlaying && (
         <div className="ad-overlay">
           <div className="ad-label">Advertisement &bull; {Math.ceil(adRemaining)}s</div>
           {adSkipable ? (
             <button className="skip-ad-btn" onClick={skipAd}>
-              Skip Ad &rarr;
+              Skip Ad <SkipForwardIcon />
             </button>
           ) : adSkipCountdown > 0 && (
             <div className="skip-countdown">Skip in {adSkipCountdown}s</div>
@@ -350,80 +481,106 @@ const VideoPlayer = ({
         </div>
       )}
 
+      {/* Controls */}
       <div className={`controls-overlay ${showControls || !isPlaying ? 'visible' : ''}`}>
-        <div className="progress-container" onClick={handleSeek}>
+        {/* Progress Bar - Smooth */}
+        <div
+          ref={progressRef}
+          className="progress-container"
+          onMouseDown={handleProgressMouseDown}
+          onMouseMove={handleProgressMouseMove}
+          onMouseUp={handleProgressMouseUp}
+          onMouseLeave={handleProgressMouseLeave}
+        >
           <div className="progress-bar">
+            <div className="progress-bg" />
+            <div className="progress-buffer" />
             <div
               className="progress-fill"
-              style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
+              style={{ width: `${progressPercent}%` }}
             />
+            {showHoverPreview && (
+              <div
+                className="progress-hover"
+                style={{ width: `${hoverPercent}%` }}
+              />
+            )}
             <div
               className="progress-handle"
-              style={{ left: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
+              style={{ left: `${progressPercent}%`, opacity: isDraggingRef.current ? 1 : undefined }}
             />
           </div>
+          {showHoverPreview && (
+            <div className="time-tooltip" style={{ left: `${hoverPercent}%` }}>
+              {formatTime(hoverTime)}
+            </div>
+          )}
         </div>
 
         <div className="controls-row">
           <div className="controls-left">
-            <button className="control-btn" onClick={togglePlay}>
-              {isPlaying ? '⏸' : '▶'}
+            <button className="control-btn play-btn" onClick={togglePlay}>
+              {isPlaying ? <PauseIcon /> : <PlayIcon />}
             </button>
 
             <div className="volume-container">
               <button className="control-btn" onClick={toggleMute}>
-                {isMuted ? '🔇' : volume > 0.5 ? '🔊' : '🔉'}
+                {isMuted ? <VolumeMuteIcon /> : volume > 0.5 ? <VolumeHighIcon /> : <VolumeLowIcon />}
               </button>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.1"
-                value={isMuted ? 0 : volume}
-                onChange={handleVolumeChange}
-                className="volume-slider"
-              />
+              <div className="volume-slider-wrapper">
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={isMuted ? 0 : volume}
+                  onChange={handleVolumeChange}
+                  className="volume-slider"
+                />
+              </div>
             </div>
 
             <span className="time-display">
-              {formatTime(currentTime)} / {formatTime(duration)}
+              {formatTime(currentTime)} <span className="time-separator">/</span> {formatTime(duration)}
             </span>
           </div>
 
           <div className="controls-right">
-            <div className="speed-menu-container">
+            <div className="menu-container">
               <button
-                className="control-btn speed-btn"
+                className="control-btn"
                 onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+                title="Playback Speed"
               >
-                {playbackSpeed}x
+                <SpeedIcon />
               </button>
               {showSpeedMenu && (
-                <div className="speed-menu">
+                <div className="dropdown-menu">
                   {[0.5, 0.75, 1, 1.25, 1.5, 2].map(speed => (
                     <button
                       key={speed}
-                      className={`speed-option ${playbackSpeed === speed ? 'active' : ''}`}
+                      className={`dropdown-item ${playbackSpeed === speed ? 'active' : ''}`}
                       onClick={() => changeSpeed(speed)}
                     >
-                      {speed}x
+                      {speed === 1 ? 'Normal' : `${speed}x`}
                     </button>
                   ))}
                 </div>
               )}
             </div>
 
-            <div className="quality-menu-container">
+            <div className="menu-container">
               <button
-                className="control-btn quality-btn"
+                className="control-btn"
                 onClick={() => setShowQualityMenu(!showQualityMenu)}
+                title="Quality"
               >
-                {currentQuality === 'auto' ? 'Auto' : currentQuality}
+                <QualityIcon />
               </button>
               {showQualityMenu && (
-                <div className="quality-menu">
+                <div className="dropdown-menu">
                   <button
-                    className={`quality-option ${currentQuality === 'auto' ? 'active' : ''}`}
+                    className={`dropdown-item ${currentQuality === 'auto' ? 'active' : ''}`}
                     onClick={() => changeQuality('auto')}
                   >
                     Auto
@@ -431,7 +588,7 @@ const VideoPlayer = ({
                   {availableQualities.map(q => (
                     <button
                       key={q.index}
-                      className={`quality-option ${currentQuality === q.label ? 'active' : ''}`}
+                      className={`dropdown-item ${currentQuality === q.label ? 'active' : ''}`}
                       onClick={() => changeQuality(q.label)}
                     >
                       {q.label}
@@ -444,12 +601,13 @@ const VideoPlayer = ({
             <button
               className="control-btn"
               onClick={() => videoRef.current?.requestPictureInPicture?.()}
+              title="Picture in Picture"
             >
-              📺
+              <PipIcon />
             </button>
 
-            <button className="control-btn" onClick={toggleFullscreen}>
-              ⛶
+            <button className="control-btn" onClick={toggleFullscreen} title="Fullscreen">
+              {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
             </button>
           </div>
         </div>
